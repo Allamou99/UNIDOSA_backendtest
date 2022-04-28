@@ -16,10 +16,15 @@ import java.util.List;
 @RequestMapping("/api/questions")
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
+
 public class QuestionController {
     private questionService questionService;
     private reponseService reponseService;
-
+    @GetMapping()
+    public List<Question> getQuestions(){
+        return this.questionService.getAllQuestion();
+    }
     @PostMapping("/initquestion")
     public void InitQuestionReponse(){
         Question q1 = Question.builder()
@@ -59,14 +64,11 @@ public class QuestionController {
 
     }
     @PostMapping("/addQuestion")
-    public void AddQuestion(@RequestBody QuestionDTO questionDTO){
-        this.questionService.addQuestion(questionDTO);
+    public String AddQuestion(@RequestBody List<QuestionDTO> questionDTO){
+        return this.questionService.addQuestion(questionDTO);
     }
 
-    @GetMapping()
-    public String getHello(){
-        return "hello world";
-    }
+
 
     @GetMapping("/propositions/{questionId}")
     public List<Reponse> allProposition(@PathVariable("questionId") int questionId){

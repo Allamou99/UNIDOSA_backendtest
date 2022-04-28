@@ -32,6 +32,9 @@ public class questionService {
         return q.getPropositions();
     }
 
+    public List<Question> getAllQuestion(){
+        return this.questionRepo.findAll();
+    }
     public List<Reponse> getAllReponsesEnvoye(int QuestionId){
         Question q = this.getQuestionById(QuestionId);
         return q.getReponsesEnvoye();
@@ -43,17 +46,23 @@ public class questionService {
     }
 
     @Transactional
-    public void addQuestion(QuestionDTO qDTO){
-        Question question = Question.builder()
-                .enonce(qDTO.getEnonce())
-                .questionType(qDTO.getType())
-                .build();
+    public String addQuestion(List<QuestionDTO> qsDTO){
 
-        this.createQuestion(question);
+        qsDTO.forEach(qDTO->{
+            Question question = Question.builder()
+                    .enonce(qDTO.getEnonce())
+                    .questionType(qDTO.getType())
+                    .build();
 
-        int q_id = question.getQuestionId();
-        this.reponseService.addReponseJustes(qDTO.getListReponseJuste(),q_id);
-        this.reponseService.addReponsesPropose(qDTO.getListProposition(),q_id);
+            this.createQuestion(question);
+
+            int q_id = question.getQuestionId();
+            this.reponseService.addReponseJustes(qDTO.getListReponseJuste(),q_id);
+            this.reponseService.addReponsesPropose(qDTO.getListProposition(),q_id);
+        });
+
+        return "Done";
+
     }
 
 }
